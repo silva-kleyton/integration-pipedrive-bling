@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { PipedriveDeals } from "../clients/pipedrive/deals";
 import { Bling } from "../clients/bling/pedidos";
-import { parseJsonDealsToSale, convertJsonToXml } from "../utils";
+import OrderModel from "../models/order";
+import {
+    parseJsonDealsToOrderBling,
+    convertJsonToXml,
+    parseDealPipedriveToOrderDTO,
+} from "../utils";
 
 const pipedriveDeals = new PipedriveDeals();
 const bling = new Bling();
@@ -17,9 +22,10 @@ class Integration {
             const { pagination } = additional_data;
 
             for (const deal of data) {
-                const jsonDeal = parseJsonDealsToSale(deal);
-                const xml = convertJsonToXml("pedido", jsonDeal);
-                await bling.createSale(xml);
+                console.log(parseDealPipedriveToOrderDTO(deal));
+                // const jsonDeal = parseJsonDealsToOrderBling(deal);
+                // const xml = convertJsonToXml("pedido", jsonDeal);
+                // await bling.createSale(xml);
             }
 
             return res.json({ success, data, pagination });
